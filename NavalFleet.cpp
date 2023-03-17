@@ -5,36 +5,36 @@
 #include <sstream>
 
 std::vector<int> parent;
-std::vector<int> rang;
 
 void makeSet(int x) {
     parent.push_back(x);
-    rang.push_back(x);
 }
 
 int findSet(int x) {
-    if (x != parent[x]) {
-        parent[x] = findSet(parent[x]);
+    if (x != parent[x - 1]) {
+        parent[x - 1] = findSet(parent[x - 1]);
     }
-    return parent[x];
+    return parent[x - 1];
 }
 
 void unionFun(int x, int y) {
     int p = findSet(x);
     int q = findSet(y);
-    if (rang[p] > rang[q]) {
-        parent[q] = p;
+    parent[p - 1] = q;
+}
+
+int distance(int x) {
+    int dist = 0;
+    if (x != parent[x - 1]) {
+        dist += std::abs(x - parent[x - 1]) % 1000;
+        dist += distance(parent[x - 1]);
     }
-    else {
-        parent[p] = q;
-        if (rang[p] == rang[q]) {
-            rang[q]++;
-        }
-    }
+    //std::cout << "Distance for " << x << " is " << dist << "\n";
+    return dist;
 }
 
 void initializeFleet(int N) {
-    for (int i = 0; i < N; i++) {
+    for (int i = 1; i <= N; i++) {
         makeSet(i);
     }
 }
@@ -44,6 +44,7 @@ int main(int argc, char* argv[])
     if (argc != 2) return -1;
 
     std::ifstream infile(argv[1]);
+    //std::ofstream outfile("output.txt");
 
     int a, b;
     char c;
@@ -51,28 +52,29 @@ int main(int argc, char* argv[])
     std::stringstream ss;
 
     if (infile.is_open()) {
-        /*infile >> N;
-        initializeFleet(N);
-        std::cout << "Number of ships: " << N << "\n";*/
         std::getline(infile, command);
-        std::cout << "Number of ships: " << stoi(command) << "\n";
+        //std::cout << "Number of ships: " << stoi(command) << "\n";
         initializeFleet(stoi(command));
 
         while (std::getline(infile, command)) {  // infile >> command
             ss << command;
             ss >> c;
-            std::cout << "Command: " << command << "\n";
+            //std::cout << "Command: " << command << "\n";
             //std::cout << "Stringstream: " << ss.str() << "\n";
 
             if (c == 'C') {
-                std::cout << "Command is C\n";
+                //std::cout << "Command is C\n";
                 ss >> a >> b;
-                std::cout << "Parameters are a: " << a << ", b: " << b << "\n";
+                //std::cout << "Parameters are a: " << a << ", b: " << b << "\n";
+                unionFun(a, b);
             }
             else if (c == 'G') {
-                std::cout << "Command is G\n";
+                //std::cout << "Command is G\n";
                 ss >> a;
-                std::cout << "Parameters are a: " << a << "\n";
+                //std::cout << "Parameters are a: " << a << "\n";
+                int dist = distance(a);
+                //outfile << dist << "\n";
+                std::cout << dist << "\n";
             }
             //ss.str(std::string());
             ss.clear();
