@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <sstream>
 
 std::vector<int> parent;
 std::vector<int> rang;
@@ -44,8 +45,10 @@ int main(int argc, char* argv[])
 
     std::ifstream infile(argv[1]);
 
-    int N;
+    int a, b;
+    char c;
     std::string command;
+    std::stringstream ss;
 
     if (infile.is_open()) {
         /*infile >> N;
@@ -55,16 +58,24 @@ int main(int argc, char* argv[])
         std::cout << "Number of ships: " << stoi(command) << "\n";
         initializeFleet(stoi(command));
 
-        while (std::getline(infile, command)) {  // infile >> command    
+        while (std::getline(infile, command)) {  // infile >> command
+            ss << command;
+            ss >> c;
             std::cout << "Command: " << command << "\n";
-            std::cout << typeid(command).name() << "\n";
+            //std::cout << "Stringstream: " << ss.str() << "\n";
 
-            if (command.at(0) == 'C') {
+            if (c == 'C') {
                 std::cout << "Command is C\n";
+                ss >> a >> b;
+                std::cout << "Parameters are a: " << a << ", b: " << b << "\n";
             }
-            else if (command.at(0) == 'G') {
+            else if (c == 'G') {
                 std::cout << "Command is G\n";
+                ss >> a;
+                std::cout << "Parameters are a: " << a << "\n";
             }
+            //ss.str(std::string());
+            ss.clear();
         }
     }
 }
